@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setUser(null);
+    setError(null);
+
+    axios
+      .get("endPont")
+      .then((res) => {
+        setLoading(false);
+        setUser(res.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err.message);
+      });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {loading && <p>loading ...</p>}
+      {error && <p>{error}</p>}
+      {user && <div>user loaded !</div>}
     </div>
   );
 }
